@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rota Principal — mattpocock/skills</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap');
+
+  :root {
+    --bg: #0a0a0c;
+    --bg-alt: #1d1c20;
+    --grid-line: rgba(238, 233, 221, 0.055);
+    --line: #8a8172;
+    --line-dim: #3a362e;
+    --accent: #e0b46e;
+    --accent-dim: #a3854a;
+    --warn: #ff9a5a;
+    --text: #f7f3e8;
+    --muted: #b6ac99;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --card-border: rgba(238, 233, 221, 0.15);
+    --card-hover: rgba(255, 255, 255, 0.08);
+    --card-shadow: 0 14px 32px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    --same: #8ecb92;
+    --any: #74c2c8;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --display: 'Fraunces', serif;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #f8f5ee;
+    --bg-alt: #efe8d6;
+    --grid-line: rgba(41, 35, 26, 0.065);
+    --line: #b39a5f;
+    --line-dim: #e6dcc0;
+    --accent: #93641f;
+    --accent-dim: #6f4b16;
+    --warn: #b8501a;
+    --text: #241f18;
+    --muted: #675e4e;
+    --card-bg: rgba(41, 35, 26, 0.035);
+    --card-border: rgba(41, 35, 26, 0.14);
+    --card-hover: rgba(41, 35, 26, 0.055);
+    --card-shadow: 0 10px 24px rgba(60, 46, 20, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    --same: #1f7a44;
+    --any: #106b72;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; animation: none !important; }
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.55;
+    padding: 0 0 2.5rem 0;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    background-image: radial-gradient(circle, var(--grid-line) 1px, transparent 1px);
+    background-size: 26px 26px;
+    background-position: -3px -3px;
+  }
+
+  :root:not([data-theme="light"]) body {
+    background-image:
+      radial-gradient(circle, var(--grid-line) 1px, transparent 1px),
+      radial-gradient(ellipse 900px 520px at 12% -8%, rgba(224, 180, 110, 0.12), transparent 60%),
+      radial-gradient(ellipse 800px 520px at 105% 15%, rgba(116, 194, 200, 0.07), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 50% 120%, rgba(224, 180, 110, 0.05), transparent 60%);
+    background-size: 26px 26px, auto, auto, auto;
+    background-position: -3px -3px, 0 0, 0 0, 0 0;
+  }
+
+  :root[data-theme="light"] body {
+    background-image:
+      radial-gradient(circle, var(--grid-line) 1px, transparent 1px),
+      radial-gradient(ellipse 900px 480px at 10% -10%, rgba(147, 100, 31, 0.07), transparent 60%),
+      radial-gradient(ellipse 800px 520px at 105% 10%, rgba(16, 107, 114, 0.05), transparent 60%);
+    background-size: 26px 26px, auto, auto;
+    background-position: -3px -3px, 0 0, 0 0;
+  }
+
+  .station-card, .command-card, .footnote, .option, .cmd,
+  details.more summary, details.sig summary, a.toc-link {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  /* ---------- theme toggle ---------- */
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    padding: 0.35rem 0.7rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    cursor: pointer;
+    margin-bottom: 1.6rem;
+  }
+  .theme-toggle:hover, .theme-toggle:focus-visible {
+    color: var(--text);
+    border-color: var(--accent);
+    outline: none;
+  }
+  .theme-toggle .dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--accent);
+    flex: none;
+  }
+
+  .page {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 780px);
+    gap: 3rem;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 980px) {
+    .page {
+      grid-template-columns: minmax(0, 780px);
+      padding: 0 1.25rem;
+    }
+    .sidebar {
+      position: static !important;
+      max-height: none !important;
+      margin-bottom: 2rem;
+      order: -1;
+      transform: none !important;
+      box-shadow: none !important;
+      border-right: none !important;
+      width: auto !important;
+      height: auto !important;
+      background: transparent !important;
+      z-index: auto !important;
+      padding: 0 0.6rem 2rem 0 !important;
+    }
+    .sidebar-toggle, .sidebar-hover-zone { display: none !important; }
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 1.5rem;
+    align-self: start;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    padding: 3.5rem 0.6rem 2rem 0;
+  }
+  .sidebar::-webkit-scrollbar { width: 5px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 3px; }
+
+  /* ---------- collapsible sidebar ---------- */
+  .sidebar-toggle {
+    position: fixed;
+    top: 1.4rem;
+    left: 1.4rem;
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    color: var(--muted);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+  }
+  .sidebar-toggle:hover, .sidebar-toggle:focus-visible {
+    color: var(--text);
+    border-color: var(--accent);
+    outline: none;
+  }
+  .sidebar-toggle svg { width: 1.05rem; height: 1.05rem; }
+
+  .sidebar-hover-zone {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 18px;
+    height: 100vh;
+    z-index: 40;
+  }
+  .page:not(.sidebar-collapsed) .sidebar-hover-zone { display: none; }
+
+  .page.sidebar-collapsed { grid-template-columns: minmax(0, 780px); justify-content: center; }
+  .page.sidebar-collapsed .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px;
+    max-height: none;
+    margin: 0;
+    padding: 4.5rem 1rem 2rem 1.4rem;
+    background: var(--bg-alt);
+    border-right: 1px solid var(--card-border);
+    box-shadow: 16px 0 34px rgba(0, 0, 0, 0.28);
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+    z-index: 55;
+  }
+  .page.sidebar-collapsed .sidebar.sidebar-peek {
+    transform: translateX(0);
+  }
+
+  .sidebar-block { margin-bottom: 2.2rem; }
+  .sidebar-block:last-child { margin-bottom: 0; }
+
+  .sidebar-title {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.9rem 0;
+  }
+
+  summary.sidebar-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  summary.sidebar-title::-webkit-details-marker { display: none; }
+  summary.sidebar-title::marker { content: ''; }
+  summary.sidebar-title:hover, summary.sidebar-title:focus-visible {
+    color: var(--text);
+    outline: none;
+  }
+  summary.sidebar-title::after {
+    content: '';
+    width: 0.42rem;
+    height: 0.42rem;
+    flex: none;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.18s ease;
+  }
+  details[open] > summary.sidebar-title::after { transform: rotate(45deg); }
+  details.sidebar-block:not([open]) { margin-bottom: 1.1rem; }
+
+  .sidebar-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+  }
+  .sidebar-legend-item:last-child { margin-bottom: 0; }
+  .sidebar-legend-item strong { color: var(--text); font-weight: 600; }
+  .sidebar-legend-item .legend-mark { width: 0.85rem; height: 0.85rem; flex: none; margin: 0; }
+
+  .toc-group { margin-bottom: 1.15rem; }
+  .toc-group:last-child { margin-bottom: 0; }
+  .toc-group-label {
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+  a.toc-link {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.32rem 0.5rem;
+    border-radius: 6px;
+    margin-bottom: 0.05rem;
+  }
+  a.toc-link:hover, a.toc-link:focus-visible {
+    color: var(--text);
+    background: var(--card-hover);
+    outline: none;
+  }
+  a.toc-link.active {
+    color: var(--text);
+    background: var(--card-hover);
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+
+  .wrap {
+    min-width: 0;
+    padding: 0;
+  }
+
+  /* ---------- Header ---------- */
+
+  header.plan-head {
+    padding: 3.5rem 0 2.2rem 0;
+    border-bottom: 1px dashed var(--card-border);
+    margin-bottom: 2.5rem;
+  }
+
+  .plan-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin: 0 0 1rem 0;
+  }
+  .plan-tag::before {
+    content: "";
+    width: 0.55rem;
+    height: 0.55rem;
+    background: var(--accent);
+    border-radius: 2px;
+    transform: rotate(45deg);
+    flex: none;
+  }
+
+  h1.plan-title {
+    font-family: var(--display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: clamp(2.2rem, 5.2vw, 3.3rem);
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    margin: 0 0 0.9rem 0;
+    color: var(--text);
+  }
+
+  .plan-sub {
+    color: var(--muted);
+    font-size: 1.04rem;
+    max-width: 56ch;
+    margin: 0;
+  }
+
+  /* legend box, blueprint style */
+  .legend {
+    margin-top: 1.8rem;
+    border: 1px dashed var(--card-border);
+    padding: 1rem 1.2rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.7rem;
+  }
+
+  .legend-item { display: flex; align-items: flex-start; gap: 0.6rem; }
+
+  .legend-mark {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 50%;
+    margin-top: 0.1rem;
+    border: 2px solid var(--line);
+  }
+  .legend-mark.branch { border-radius: 3px; border-color: var(--accent); transform: rotate(45deg); }
+  .legend-mark.maint { border-style: dashed; border-color: var(--muted); }
+  .legend-mark.opt { border-style: dotted; border-color: var(--any); }
+
+  /* ---------- signature: mapa esquemático da rota ---------- */
+
+  .map-line { stroke: var(--line); stroke-width: 3; stroke-linecap: round; }
+  .map-branch { fill: none; stroke: var(--any); stroke-width: 2; stroke-dasharray: 4 5; }
+  .map-connector { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 3 5; }
+  .map-offline { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 2 6; stroke-linecap: round; }
+  .map-offdot { fill: var(--bg); stroke: var(--muted); stroke-width: 2; }
+  .map-branchdot { fill: var(--any); }
+  .map-stop circle, .map-stop rect { fill: var(--bg); stroke: var(--line); stroke-width: 3; }
+  .map-branchstop rect { stroke: var(--accent); }
+  .map-terminus circle:nth-child(2) { fill: none; stroke: var(--line); stroke-width: 1.5; }
+  .map-num {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 700;
+    fill: var(--muted);
+    text-anchor: middle;
+  }
+  .map-label, .map-label-sm {
+    font-family: var(--mono);
+    fill: var(--muted);
+    text-anchor: middle;
+  }
+  .map-label { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .map-label-sm { font-size: 12.5px; }
+  @media (max-width: 640px) {
+    .map-label, .map-label-sm { display: none; }
+  }
+
+  /* glossary of acronyms, in header */
+  details.glossary {
+    margin-top: 1.2rem;
+    border: 1px dashed var(--card-border);
+    border-radius: 8px;
+    background: var(--card-bg);
+  }
+  details.glossary summary {
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    text-transform: uppercase;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+    border-radius: 6px;
+  }
+  details.glossary summary:hover { background: var(--card-hover); }
+  details.glossary summary::-webkit-details-marker { display: none; }
+  details.glossary summary::before {
+    content: "▸";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.1rem;
+    font-size: 0.8rem;
+    line-height: 1;
+    transition: transform 0.15s ease;
+  }
+  details.glossary[open] summary::before { content: "▸"; transform: rotate(90deg); }
+  .glossary-body {
+    padding: 0 1.2rem 1.1rem 1.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.8rem;
+  }
+  .gloss-item { font-size: 0.85rem; color: var(--muted); }
+  .gloss-item strong {
+    display: block;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.88rem;
+    margin-bottom: 0.15rem;
+  }
+
+  /* ---------- Route line ---------- */
+
+  .route {
+    position: relative;
+    padding-left: 2.4rem;
+  }
+
+  .route::before {
+    content: "";
+    position: absolute;
+    left: 0.68rem;
+    top: 0.3rem;
+    bottom: 0.3rem;
+    width: 3px;
+    border-radius: 2px;
+    background:
+      repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.28) 0 1px, transparent 1px 13px),
+      linear-gradient(var(--line-dim), var(--line) 6%, var(--line) 94%, var(--line-dim));
+  }
+  :root[data-theme="light"] .route::before {
+    background:
+      repeating-linear-gradient(to bottom, rgba(41, 35, 26, 0.16) 0 1px, transparent 1px 13px),
+      linear-gradient(var(--line-dim), var(--line) 6%, var(--line) 94%, var(--line-dim));
+  }
+
+  .station {
+    position: relative;
+    margin-bottom: 2.8rem;
+  }
+
+  .station-num {
+    position: absolute;
+    left: -2.53rem;
+    top: -0.02rem;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2.5px solid var(--line);
+    color: var(--line);
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    box-shadow: 0 0 0 4px var(--bg);
+  }
+
+  .station.branch .station-num {
+    border-radius: 6px;
+    border-color: var(--accent);
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, var(--bg));
+    transform: rotate(45deg);
+    box-shadow: 0 0 0 4px var(--bg), 0 0 0 7px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+  .station.branch .station-head { transform: none; }
+
+  .station.maint .station-num {
+    border-style: dashed;
+    border-color: var(--muted);
+    color: var(--muted);
+  }
+
+  .station.optional-group {
+    margin-bottom: 2.2rem;
+    margin-left: 0.4rem;
+  }
+  .station.optional-group::before {
+    content: "»";
+    position: absolute;
+    top: 0.05rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--bg);
+    font-family: var(--mono);
+    font-weight: 700;
+    border: 2px solid;
+    border-style: dotted;
+    border-color: var(--any);
+    color: var(--any);
+    width: 1.4rem;
+    height: 1.4rem;
+    font-size: 0.85rem;
+    left: -2.3rem;
+  }
+
+  .station-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--line);
+    border-radius: 10px;
+    padding: 1.2rem 1.3rem 1.1rem 1.3rem;
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(8px);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+  .station-card:hover { transform: translateY(-1px); }
+
+  .station.branch .station-card {
+    border-left-color: var(--accent);
+    border-left-width: 4px;
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--accent) 7%, transparent), transparent 40%),
+      var(--card-bg);
+  }
+  .station.maint .station-card { border-left-color: var(--muted); border-left-style: dashed; }
+  .station.optional-group > .group-label {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--any);
+    margin: 0 0 0.7rem 0;
+  }
+
+  .station-eyebrow-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin: 0 0 0.35rem 0;
+  }
+
+  .station-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+  }
+  .station.branch .station-eyebrow { color: var(--accent); }
+  .station.maint .station-eyebrow { color: var(--muted); }
+
+  /* session badges */
+  .session-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  .session-same { color: var(--same); border-color: var(--same); background: color-mix(in srgb, var(--same) 12%, transparent); }
+  .session-new { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .session-cond { color: var(--muted); border-color: var(--muted); background: color-mix(in srgb, var(--muted) 12%, transparent); }
+  .session-any { color: var(--any); border-color: var(--any); background: color-mix(in srgb, var(--any) 12%, transparent); }
+
+  .cond-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: 0 0 0.8rem 0;
+    padding-left: 0.1rem;
+  }
+  .cond-note strong { color: var(--text); }
+
+  .station h2 {
+    font-family: var(--display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: 1.4rem;
+    letter-spacing: -0.005em;
+    margin: 0 0 0.6rem 0;
+    color: var(--text);
+  }
+
+  .station h2 code {
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 0.82em;
+  }
+
+  .station p { margin: 0 0 0.7rem 0; color: var(--text); font-size: 0.96rem; }
+  .station p:last-of-type { margin-bottom: 0; }
+
+  .cmd {
+    display: inline-block;
+    background: var(--bg-alt);
+    border: 1px solid var(--card-border);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 3px;
+  }
+
+  /* branch options side by side */
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+    margin-top: 0.9rem;
+  }
+  @media (max-width: 620px) {
+    .options { grid-template-columns: 1fr; }
+  }
+  .option {
+    border: 1px solid var(--card-border);
+    border-radius: 7px;
+    padding: 0.85rem 0.9rem;
+    background: var(--card-bg);
+  }
+  .option .opt-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 0.4rem 0;
+  }
+  .option p { font-size: 0.88rem; margin: 0; }
+
+  /* command cards, inside an optional-group */
+  .command-card {
+    border: 1px solid var(--card-border);
+    border-left: 3px dotted var(--any);
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.9rem;
+    box-shadow: var(--card-shadow);
+  }
+  .command-card:last-child { margin-bottom: 0; }
+  .command-card h3 {
+    font-family: var(--mono);
+    font-size: 1rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--any);
+  }
+  .command-card p { font-size: 0.9rem; margin: 0 0 0.6rem 0; }
+  .command-card p:last-of-type { margin-bottom: 0; }
+
+  /* highlight forte, usado na estacao de triage */
+  .highlight-orange {
+    border: 1px solid color-mix(in srgb, var(--warn) 55%, transparent) !important;
+    border-left: 4px solid var(--warn) !important;
+    background: color-mix(in srgb, var(--warn) 9%, var(--card-bg)) !important;
+  }
+  .highlight-orange::before {
+    border-color: var(--warn) !important;
+    color: var(--warn) !important;
+  }
+  .highlight-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--warn);
+    border: 1px solid var(--warn);
+    border-radius: 3px;
+    padding: 0.15rem 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  /* ---------- estrutura colapsável dos cards ---------- */
+
+  details.station-toggle {
+    width: 100%;
+  }
+
+  summary.station-summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+  summary.station-summary::-webkit-details-marker { display: none; }
+  summary.station-summary {
+    border-radius: 8px;
+    padding: 0.2rem 0.3rem;
+    margin: -0.2rem -0.3rem;
+  }
+  summary.station-summary:hover { background: var(--card-hover); }
+
+  summary.station-summary::after {
+    content: "▸";
+    flex: none;
+    align-self: flex-start;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: auto;
+    margin-top: 0.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  details.station-toggle[open] > summary.station-summary::after {
+    transform: rotate(90deg);
+    color: var(--accent);
+  }
+  summary.station-summary:hover::after,
+  summary.station-summary:focus-visible::after {
+    color: var(--accent);
+  }
+  summary.station-summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .station-head {
+    flex: 1;
+    min-width: 0;
+  }
+  .station-head h2,
+  .station-head h3 {
+    margin-top: 0;
+  }
+  .station-head .station-eyebrow-row:last-child,
+  .station-head h2:last-child,
+  .station-head h3:last-child {
+    margin-bottom: 0;
+  }
+
+  .station-body {
+    padding-top: 1.1rem;
+  }
+  .station-body > p:first-child {
+    margin-top: 0;
+  }
+
+  /* ---------- toggle "mais contexto" ---------- */
+
+  details.more {
+    margin-top: 1rem;
+    border-top: 1px dashed var(--card-border);
+    padding-top: 0.1rem;
+  }
+
+  details.more summary {
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    text-transform: uppercase;
+    padding: 0.7rem 0.5rem 0.7rem 0.3rem;
+    margin-left: -0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+    border-radius: 6px;
+  }
+
+  details.more summary:hover { background: var(--card-hover); }
+  details.more summary::-webkit-details-marker { display: none; }
+
+  details.more summary::before {
+    content: "▸";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    font-size: 0.8rem;
+    line-height: 1;
+    transition: transform 0.15s ease;
+  }
+
+  details.more[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  details.more summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .more-body {
+    font-size: 0.89rem;
+    color: var(--muted);
+    padding: 0 0 0.9rem 0.3rem;
+  }
+
+  .more-body p { margin: 0 0 0.65rem 0; }
+  .more-body p:last-child { margin-bottom: 0; }
+  .more-body strong { color: var(--text); }
+  .more-body code { color: var(--accent); font-family: var(--mono); font-size: 0.85rem; }
+
+  /* ---------- siglas clicáveis + toggle "Significados" ---------- */
+
+  button.acr {
+    all: unset;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    border-bottom: 1px dotted var(--accent);
+    padding-bottom: 0.05em;
+  }
+  button.acr:hover, button.acr:focus-visible {
+    color: var(--accent);
+  }
+  button.acr:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  details.sig {
+    margin-top: 0.7rem;
+    border-top: 1px dashed var(--card-border);
+    padding-top: 0.1rem;
+  }
+  details.sig summary {
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: var(--any);
+    text-transform: uppercase;
+    padding: 0.7rem 0.5rem 0.7rem 0.3rem;
+    margin-left: -0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+    border-radius: 6px;
+  }
+  details.sig summary:hover { background: var(--card-hover); }
+  details.sig summary::-webkit-details-marker { display: none; }
+  details.sig summary::before {
+    content: "▸";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    font-size: 0.8rem;
+    line-height: 1;
+    transition: transform 0.15s ease;
+  }
+  details.sig[open] summary::before { transform: rotate(90deg); }
+  .sig-body {
+    font-size: 0.87rem;
+    color: var(--muted);
+    padding: 0 0 0.7rem 0.3rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .sig-body strong {
+    color: var(--text);
+    font-family: var(--mono);
+    margin-right: 0.35rem;
+  }
+
+  @keyframes sigFlash {
+    0% { background: color-mix(in srgb, var(--any) 28%, transparent); }
+    100% { background: transparent; }
+  }
+  details.sig.flash {
+    animation: sigFlash 1.1s ease-out;
+  }
+
+  /* ---------- footer note ---------- */
+
+  section.post-route {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px dashed var(--card-border);
+  }
+
+  h2.post-route-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.6rem;
+    color: var(--text);
+    margin: 0 0 0.5rem 0;
+  }
+
+  section.post-route .command-card {
+    border-left-style: dotted;
+  }
+
+  .cmd-group {
+    margin-bottom: 2.4rem;
+  }
+  .cmd-group:last-child {
+    margin-bottom: 0;
+  }
+  h3.cmd-group-title {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    color: var(--any);
+    text-transform: uppercase;
+    margin: 0 0 0.35rem 0;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px dashed var(--card-border);
+  }
+  p.cmd-group-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin: 0.6rem 0 1rem 0;
+  }
+
+  .footnote {
+    margin-top: 3rem;
+    padding: 1.2rem 1.3rem;
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    background: var(--bg-alt);
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .footnote strong { color: var(--text); }
+
+</style>
+</head>
+<body>
+<div class="page" id="page">
+
+<div class="sidebar-hover-zone" id="sidebarHoverZone"></div>
+<button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Mostrar ou esconder barra lateral" aria-expanded="true">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="10" y1="4" x2="10" y2="20"></line></svg>
+</button>
+
+<aside class="sidebar" id="sidebar">
+<button type="button" class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro e escuro">
+<span class="dot"></span>
+<span id="themeToggleLabel">Tema escuro</span>
+</button>
+
+<details class="sidebar-block">
+<summary class="sidebar-title">O que significa cada marca</summary>
+<div class="sidebar-legend-item"><span><strong>Estação fixa</strong> obrigatória</span><span class="legend-mark"></span></div>
+<div class="sidebar-legend-item"><span><strong>Bifurcação</strong> você decide</span><span class="legend-mark branch"></span></div>
+<div class="sidebar-legend-item"><span><strong>Fora da rota</strong> manutenção</span><span class="legend-mark maint"></span></div>
+<div class="sidebar-legend-item"><span><strong>Comando útil</strong> opcional</span><span class="legend-mark opt"></span></div>
+</details>
+
+<details class="sidebar-block">
+<summary class="sidebar-title">Selo de sessão</summary>
+<div class="sidebar-legend-item"><span class="session-tag session-same">Mesmo chat</span></div>
+<div class="sidebar-legend-item"><span class="session-tag session-new">Chat novo</span></div>
+<div class="sidebar-legend-item"><span class="session-tag session-cond">Depende</span></div>
+<div class="sidebar-legend-item"><span class="session-tag session-any">Qualquer sessão</span></div>
+</details>
+
+<div class="sidebar-block">
+<p class="sidebar-title">Navegação rápida</p>
+<nav>
+<div class="toc-group">
+<p class="toc-group-label">Pré-requisito</p>
+<a class="toc-link" href="#st-00" data-open="st-00">Instalação e setup</a>
+</div>
+<div class="toc-group">
+<p class="toc-group-label">Rota principal</p>
+<a class="toc-link" href="#st-01" data-open="st-01">01 · grill-with-docs</a>
+<a class="toc-link" href="#st-02" data-open="st-02">02 · precisa de protótipo?</a>
+<a class="toc-link" href="#st-03" data-open="st-03">03 · sessão única ou build grande?</a>
+<a class="toc-link" href="#st-04" data-open="st-04">04 · implement</a>
+<a class="toc-link" href="#st-05" data-open="st-05">05 · code-review</a>
+</div>
+<div class="toc-group">
+<p class="toc-group-label">Fora da rota</p>
+<a class="toc-link" href="#st-improve" data-open="st-improve">improve-codebase-architecture</a>
+<a class="toc-link" href="#st-triage" data-open="st-triage">triage</a>
+<a class="toc-link" href="#st-wayfinder" data-open="st-wayfinder">wayfinder</a>
+</div>
+<div class="toc-group">
+<p class="toc-group-label">Comandos úteis</p>
+<a class="toc-link" href="#grp-aprender">Aprender a fundo, fora do projeto</a>
+<a class="toc-link" href="#grp-comunicar">Se comunicar no dia a dia</a>
+<a class="toc-link" href="#grp-orientar">Se orientar</a>
+<a class="toc-link" href="#grp-caminho">Front-end vs back-end</a>
+<a class="toc-link" href="#grp-desafiar">Desafiar e desenhar</a>
+<a class="toc-link" href="#grp-investigar">Investigar e manter</a>
+<a class="toc-link" href="#grp-editar">Editar as skills</a>
+</div>
+</nav>
+</div>
+</aside>
+
+<div class="wrap">
+<header class="plan-head">
+<p class="plan-tag">Documentação de referência · v4</p>
+<h1 class="plan-title">Rota Principal: da ideia ao ship</h1>
+<p class="plan-sub">Documentação das skills do mattpocock/skills, estação por estação. Cada card abre uma anotação técnica com mais contexto, para nenhuma dúvida ficar para trás.</p>
+<p class="plan-sub" style="margin-top: 0.8rem; font-size: 0.9rem;">Os comandos valem tanto para o terminal quanto para o plugin do Claude Code no VS Code. Onde o comportamento muda de um para o outro, isso está anotado no contexto da estação. A legenda e o índice ficam sempre visíveis na barra ao lado.</p>
+
+<details class="glossary">
+<summary>Significado das siglas usadas aqui</summary>
+<div class="glossary-body">
+<div class="gloss-item"><strong>ADR</strong>Architecture Decision Record. Um registro curto de uma decisão de arquitetura difícil de reverter, o porquê dela, e o que foi descartado no caminho.</div>
+<div class="gloss-item"><strong>PRD</strong>Product Requirements Document. O documento de requisitos que descreve o que precisa ser construído. Hoje o pacote chama esse documento de spec, mas PRD é o nome mais conhecido de mercado.</div>
+<div class="gloss-item"><strong>TDD</strong>Test-Driven Development. Desenvolver escrevendo primeiro um teste que falha, depois o código mínimo para ele passar, e só então melhorando esse código.</div>
+<div class="gloss-item"><strong>CLI</strong>Command Line Interface. Interface de linha de comando, o terminal, em contraste com o plugin gráfico do VS Code.</div>
+<div class="gloss-item"><strong>IDE</strong>Integrated Development Environment. O editor de código com ferramentas integradas, como o VS Code.</div>
+<div class="gloss-item"><strong>URL</strong>Uniform Resource Locator. O endereço que aponta para uma página ou recurso na web, como o link de uma issue.</div>
+</div>
+</details>
+</header>
+<div class="route">
+<!-- 00 -->
+<div class="station" data-n="00" id="st-00">
+<div class="station-card"><details class="station-toggle"><summary class="station-summary"><span class="station-num">00</span><div class="station-head"><div class="station-eyebrow-row">
+<p class="station-eyebrow">Pré requisito</p>
+<span class="session-tag session-same">Mesmo chat</span>
+</div><h2>Instalação e <code>/setup-matt-pocock-skills</code></h2></div></summary><div class="station-body"><p>Instale o pacote de skills no seu projeto e rode o setup uma única vez por repositório. Ele pergunta qual rastreador de issues você vai usar, quais labels aplicar na triagem, e onde salvar a documentação de domínio.</p><div class="options">
+<div class="option">
+<p class="opt-label">Opção A · copiar</p>
+<p><span class="cmd">npx skills@latest add mattpocock/skills</span> — arquivos editáveis dentro do seu repo.</p>
+</div>
+<div class="option">
+<p class="opt-label">Opção B · plugin</p>
+<p><span class="cmd">/plugin marketplace add mattpocock/skills</span> — bundle somente leitura, sempre atualizado.</p>
+</div>
+</div><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Depois de escolher a opção A ou B, rode <code>/setup-matt-pocock-skills</code> dentro do seu agente. Sem esse passo, as outras skills não sabem onde gravar a documentação nem qual rastreador de issues consultar, e algumas vão parar para perguntar isso no meio do fluxo.</p>
+<p><strong>Se você não tem certeza de qual rastreador escolher</strong>, arquivos locais é a opção mais simples para um primeiro teste, sem depender de conta em GitHub ou GitLab. Existem quatro opções na real, GitHub e GitLab como integrações de verdade, usando a CLI oficial de cada um, local em markdown, e uma quarta opção "outro", que cobre Linear, Jira e qualquer outro rastreador. Nessa quarta opção você só descreve seu fluxo de trabalho num parágrafo, e o setup grava isso como texto livre, sem integração automática de verdade. Ou seja, Linear funciona, mas não do mesmo jeito nativo que GitHub ou GitLab, é mais uma anotação de como você trabalha do que uma conexão de fato.</p>
+<p><strong>Funciona também num projeto que já existe no GitHub e nunca usou nenhuma dessas skills antes.</strong> O que importa é ter um repositório, não ter usado a skill antes. Instale o pacote nesse projeto, rode o setup, e o <code>/grill-with-docs</code> já vai explorar o código existente para responder perguntas e começar o <code>CONTEXT.md</code> e os <button class="acr" data-target="sig-00" type="button">ADR</button>s do zero, mesmo que o projeto já tenha bastante código escrito sem essas skills.</p>
+<p><strong>Documentação de domínio para monorepo:</strong> o setup assume por padrão um único <code>CONTEXT.md</code> na raiz do projeto. Se ele detectar sinais de monorepo, várias partes bem separadas dentro do mesmo repositório, oferece em vez disso uma estrutura de múltiplos contextos, mais de um <code>CONTEXT.md</code>, um por área. Isso só aparece se o setup identificar esse cenário, não é algo que você escolhe do nada.</p>
+<p><strong>Manter atualizado sem o plugin:</strong> se você instalou copiando os arquivos para dentro do repositório, em vez do plugin, use <code>npx skills update</code> de vez em quando para puxar as versões mais novas das skills. Quem instalou como plugin não precisa disso, o bundle já se atualiza sozinho.</p>
+</div>
+</details><details class="sig" id="sig-00">
+<summary>Significados</summary>
+<div class="sig-body">
+<div><strong>ADR</strong>Architecture Decision Record. Um registro curto de uma decisão de arquitetura difícil de reverter, o porquê dela, e o que foi descartado no caminho.</div>
+</div>
+</details></div></details></div>
+</div>
+<!-- 01 -->
+<div class="station" data-n="01" id="st-01">
+<div class="station-card"><details class="station-toggle"><summary class="station-summary"><span class="station-num">01</span><div class="station-head"><div class="station-eyebrow-row">
+<p class="station-eyebrow">Estação 1 de 4</p>
+<span class="session-tag session-same">Mesmo chat</span>
+</div><h2><code>/grill-with-docs</code></h2></div></summary><div class="station-body"><p>Descreva a funcionalidade ou mudança que você quer construir. O agente te entrevista de forma insistente até esgotar as ramificações da decisão, e vai escrevendo em <code>CONTEXT.md</code> e em <button class="acr" data-target="sig-01" type="button">ADR</button>s os termos e decisões que surgirem.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Essa entrevista existe para fechar a lacuna de comunicação entre você e o agente antes que qualquer código seja escrito. É o ponto mais barato para corrigir um mal entendido.</p>
+<p><strong>Repita essa estação</strong> quantas vezes fizer sentido. Uma segunda rodada, já com <code>CONTEXT.md</code> mais maduro, costuma levantar perguntas mais finas.</p>
+</div>
+</details><details class="sig" id="sig-01">
+<summary>Significados</summary>
+<div class="sig-body">
+<div><strong>ADR</strong>Architecture Decision Record. Um registro curto de uma decisão de arquitetura difícil de reverter, o porquê dela, e o que foi descartado no caminho.</div>
+</div>
+</details></div></details></div>
+</div>
+<!-- comandos uteis apos 01 -->
+<div class="station optional-group">
+<p class="group-label">Comandos úteis · não obrigatórios</p>
+<div class="command-card"><details class="station-toggle"><summary class="station-summary"><div class="station-head"><div class="station-eyebrow-row">
+<h3><code>/grill-me</code></h3>
+<span class="session-tag session-any">Qualquer sessão</span>
+</div></div></summary><div class="station-body"><p>A mesma entrevista relentless do <code>/grill-with-docs</code>, mas para quando você ainda não tem repositório nenhum, só uma ideia que quer amassar antes de criar o projeto.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p><strong>O critério que decide entre os dois não é se o plano é vago ou concreto, é se existe um repositório.</strong> Com repositório, mesmo que inicial ou quase vazio, use <code>/grill-with-docs</code>: ele lê o código para responder perguntas e grava o aprendizado em <code>CONTEXT.md</code> e <button class="acr" data-target="sig-grillme" type="button">ADR</button>s. Sem repositório nenhum ainda, use <code>/grill-me</code>: mesma entrevista, mas não grava nada em disco, o único resultado é o entendimento na própria conversa. Por ser stateless, funciona em qualquer sessão, sem depender de nada aberto antes.</p>
+</div>
+</details><details class="sig" id="sig-grillme">
+<summary>Significados</summary>
+<div class="sig-body">
+<div><strong>ADR</strong>Architecture Decision Record. Um registro curto de uma decisão de arquitetura difícil de reverter, o porquê dela, e o que foi descartado no caminho.</div>
+</div>
+</details></div></details></div>
+</div>
+<!-- 02 branch -->
+<div class="station branch" data-n="02" id="st-02">
+<div class="station-card"><details class="station-toggle"><summary class="station-summary"><span class="station-num">02</span><div class="station-head"><div class="station-eyebrow-row">
+<p class="station-eyebrow">Bifurcação · você decide</p>
+<span class="session-tag session-cond">Depende</span>
+</div><p class="cond-note"><strong>Condição:</strong> chat novo só entra se você cair no caminho "Sim, preciso testar". Se resolver na conversa, fica tudo no mesmo chat.</p><h2>Alguma pergunta só tem resposta rodando código?</h2></div></summary><div class="station-body"><p>Se a dúvida envolve estado, uma regra de negócio ou uma tela que você precisa ver funcionando, ela não se resolve só na conversa.</p><div class="options">
+<div class="option">
+<p class="opt-label">Sim, preciso testar · chat novo</p>
+<p><span class="cmd">/handoff</span> para sair, abra sessão nova, <span class="cmd">/prototype</span> para responder com código descartável, <span class="cmd">/handoff</span> de volta com o que aprendeu.</p>
+</div>
+<div class="option">
+<p class="opt-label">Não, resolvo na conversa · mesmo chat</p>
+<p>Siga direto para a próxima estação, sem sair da sessão atual.</p>
+</div>
+</div><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>O protótipo é jogado fora depois. O que importa é a resposta que ele te dá, não o código em si. Por isso o <code>/handoff</code> de volta traz só o aprendizado, referenciado a partir da conversa original.</p>
+<p>Essa é a única estação da rota principal onde vale abrir uma sessão nova antes de terminar a especificação. Fora daqui, mantenha a entrevista, a spec e os tickets numa janela de contexto só, sem compactar.</p>
+</div>
+</details></div></details></div>
+</div>
+<!-- comandos uteis apos 02 -->
+<div class="station optional-group">
+<p class="group-label">Comandos úteis · não obrigatórios</p>
+<div class="command-card"><details class="station-toggle"><summary class="station-summary"><div class="station-head"><div class="station-eyebrow-row">
+<h3><code>/handoff</code></h3>
+<span class="session-tag session-cond">Depende</span>
+</div><p class="cond-note"><strong>Condição:</strong> só use quando for realmente sair da conversa atual para uma sessão nova, preservando o que já foi decidido.</p></div></summary><div class="station-body"><p>Não é nativo do Claude Code, é uma skill do pacote, acionada só por você. Compacta a conversa atual num arquivo markdown para uma sessão nova continuar de onde parou.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Ao rodar, ela escreve o arquivo na pasta temporária do sistema operacional, não na pasta do projeto, resumindo a conversa e sugerindo quais skills a próxima sessão deveria usar.</p>
+<p>No plugin do VS Code, o caminho é: rodar <code>/handoff</code> na conversa atual, ele devolve o caminho do arquivo gerado, você abre uma aba nova de conversa dentro do próprio plugin e referencia esse arquivo nela. Ao terminar, roda <code>/handoff</code> de novo nessa aba nova para trazer o caminho de volta.</p>
+<p>Esse vaivém não é exclusivo do <code>/prototype</code>. Funciona do mesmo jeito a partir de uma conversa de <code>/grill-me</code>, ou de qualquer outra sessão que você queira bifurcar preservando contexto.</p>
+</div>
+</details></div></details></div>
+<div class="command-card"><details class="station-toggle"><summary class="station-summary"><div class="station-head"><div class="station-eyebrow-row">
+<h3><code>/compact</code></h3>
+<span class="session-tag session-same">Mesmo chat</span>
+</div></div></summary><div class="station-body"><p>Recurso nativo do Claude Code, não é uma skill do pacote. Resume os turnos anteriores da própria conversa, sem abrir nada novo.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Use em pausas intencionais entre fases, quando não se importa em perder o histórico literal. Evite compactar no meio de uma fase, como no meio de uma entrevista de <code>/grill-with-docs</code> ainda em andamento, o agente pode perder o rumo.</p>
+<p><code>/handoff</code> bifurca para outra sessão. <code>/compact</code> continua na mesma.</p>
+</div>
+</details></div></details></div>
+<div class="command-card"><details class="station-toggle"><summary class="station-summary"><div class="station-head"><div class="station-eyebrow-row">
+<h3><code>/prototype</code></h3>
+<span class="session-tag session-cond">Depende</span>
+</div><p class="cond-note"><strong>Condição:</strong> mesmo chat se rodado na conversa que já está discutindo o design. Chat novo se veio pelo caminho de <code>/handoff</code> da estação 02.</p></div></summary><div class="station-body"><p>Constrói um protótipo descartável para responder uma dúvida de design, um app de terminal rodável para dúvidas de estado e lógica, ou várias variações de tela radicalmente diferentes, alternáveis a partir de uma única rota.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Dá para discutir a tela em si dentro do próprio <code>/grill-with-docs</code>, decidindo estrutura, fluxo, o que aquela parte da interface precisa fazer. Quando a dúvida só se resolve vendo de verdade, aí entra o <code>/prototype</code>, gerando as variações para você comparar lado a lado antes de decidir.</p>
+<p>Enquanto o <code>/prototype</code> escreve esse código de tela, o Claude também aplica sozinho a skill de <code>frontend design</code> descrita no card ao lado, então cada variação já nasce com uma direção visual cuidada, não só estruturalmente diferente uma da outra. É por isso que os dois valem a pena juntos, o <code>/prototype</code> decide o quê comparar, o frontend design cuida de como cada opção fica pronta na tela.</p>
+</div>
+</details></div></details></div>
+<div class="command-card"><details class="station-toggle"><summary class="station-summary"><div class="station-head"><span class="highlight-tag" style="color: var(--any); border-color: var(--any);">Não é um comando de skill</span><div class="station-eyebrow-row">
+<h3>Frontend design do Claude</h3>
+<span class="session-tag session-any">Qualquer sessão</span>
+</div></div></summary><div class="station-body"><p>Não vem do pacote do mattpocock e não se digita como comando. É uma skill do próprio ambiente do Claude, consultada sozinha sempre que ele vai escrever código de interface, React, Vue, HTML, um componente novo.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Funciona como uma camada a mais de pensamento antes de gerar a tela, sobre direção estética, tipografia, e como evitar que a interface saia com cara de padrão genérico. Não decide o quê construir, isso é papel do grill e do <code>/prototype</code>, decide como aquilo vai ficar visualmente uma vez construído.</p>
+<p>Não precisa fazer nada para ativar, ela entra sozinha no momento de escrever a interface, dentro ou fora de uma sessão de <code>/prototype</code>.</p>
+</div>
+</details></div></details></div>
+</div>
+<!-- 03 branch -->
+<div class="station branch" data-n="03" id="st-03">
+<div class="station-card"><details class="station-toggle"><summary class="station-summary"><span class="station-num">03</span><div class="station-head"><div class="station-eyebrow-row">
+<p class="station-eyebrow">Bifurcação · você decide</p>
+<span class="session-tag session-cond">Depende</span>
+</div><p class="cond-note"><strong>Condição:</strong> <code>/to-spec</code> e <code>/to-tickets</code> ficam sempre no mesmo chat. Chat novo só entra depois, um por ticket, ao rodar <code>/implement</code>.</p><h2>O trabalho cabe em uma sessão, ou é um build grande?</h2></div></summary><div class="station-body"><p>Trabalho grande, que vai se espalhar por várias sessões de implementação, ganha um documento de requisitos e uma quebra em tarefas menores antes de codar. Trabalho pequeno vai direto para a implementação.</p><div class="options">
+<div class="option">
+<p class="opt-label">Build grande · mesmo chat</p>
+<p><span class="cmd">/to-spec</span> organiza tudo que já foi discutido na entrevista, mais o que o agente entende do código, num documento formal de requisitos. Ele não te entrevista de novo. Depois <span class="cmd">/to-tickets</span> corta esse documento em pedaços pequenos e independentes, prontos para implementar um de cada vez.</p>
+</div>
+<div class="option">
+<p class="opt-label">Cabe numa sessão · mesmo chat</p>
+<p>Pule direto para <span class="cmd">/implement</span>, também na mesma janela de contexto em que você grillou. Sem spec nem tickets, porque a própria conversa já tem tudo que a implementação precisa.</p>
+</div>
+</div><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p><strong>Nota de nomenclatura:</strong> essas duas skills já se chamaram <code>/to-prd</code> e <code>/to-issues</code> em versões anteriores do repositório. Hoje os nomes são <code>/to-spec</code> e <code>/to-tickets</code>, esta última fundida com uma antiga <code>/to-plan</code>. O comportamento é o mesmo, só o nome do comando mudou.</p>
+<p><strong>Onde a spec (<button class="acr" data-target="sig-03" type="button">PRD</button>) fica salva:</strong> no rastreador que você escolheu no <code>/setup-matt-pocock-skills</code>. Se foi arquivos locais, vira um arquivo markdown de verdade dentro de uma pasta <code>.scratch/&lt;funcionalidade&gt;/</code> no seu repositório. Se foi GitHub ou GitLab, vira uma issue real lá. Em qualquer caso, você consegue abrir e editar antes de seguir, e vale a pena revisar aqui, é o ponto mais barato para corrigir algo antes de quebrar em tickets.</p>
+<p><strong>Como os tickets nascem:</strong> cada um é uma fatia que atravessa todas as camadas do sistema de ponta a ponta, banco, API, tela, teste, em vez de ser uma camada inteira sozinha. Se local, viram arquivos dentro de <code>.scratch/&lt;funcionalidade&gt;/issues/</code>, cada um dizendo o que bloqueia o quê, trabalhados na mão seguindo essa ordem. Se GitHub ou GitLab, viram issues de verdade com links nativos de bloqueio entre elas, e qualquer ticket cujos bloqueios já foram resolvidos pode ser pego. Você vai ticket por ticket, implementando, revisando e só então passando para o próximo liberado. O motivo de fazer isso é poder revisar e testar em pedaços pequenos, em vez de uma implementação gigante de uma vez só.</p>
+<p><strong>Como apontar o <code>/implement</code> para um ticket específico:</strong> você referencia ele direto na sua mensagem ao chamar o comando. Para um ticket no GitHub ou GitLab, escreva algo como <code>/implement issue #14</code> ou cole a <button class="acr" data-target="sig-03" type="button">URL</button> da issue. Para um ticket local, escreva <code>/implement</code> seguido do caminho do arquivo, por exemplo <code>/implement .scratch/carrinho/issues/03-validar-cupom.md</code>.</p>
+<p><strong>O critério não é se o projeto é novo, é se o trabalho cabe numa sessão de implementação ou vai se espalhar por várias.</strong> Dentro da bifurcação em si, não existe chat novo, ele só entra depois, uma vez para cada ticket.</p>
+<p><strong>A issue publicada pelo <code>/to-spec</code> é uma issue normal do GitHub</strong>, sem nada de protegido. Você pode editar o corpo dela ou comentar à vontade. Editar o corpo muda diretamente o que as próximas skills vão ler como fonte da verdade. Comentar não desaparece, mas não é lido sozinho, então aponte o comentário explicitamente na próxima chamada se quiser que seja considerado.</p>
+<p><strong><code>/to-tickets</code> não precisa que você referencie a spec se ainda estiver na mesma conversa</strong> onde ela foi publicada, ele lê automático o que já está no contexto. Só referencie pelo número ou pela URL, do mesmo jeito que no <code>/implement</code>, se abrir uma sessão nova sem esse histórico, ou se houver mais de uma spec discutida na mesma conversa e for preciso deixar explícito qual delas quebrar.</p>
+</div>
+</details><details class="sig" id="sig-03">
+<summary>Significados</summary>
+<div class="sig-body">
+<div><strong>PRD</strong>Product Requirements Document. O documento de requisitos que descreve o que precisa ser construído. Hoje o pacote chama esse documento de spec, mas PRD é o nome mais conhecido de mercado.</div>
+<div><strong>URL</strong>Uniform Resource Locator. O endereço que aponta para uma página ou recurso na web, como o link de uma issue.</div>
+</div>
+</details></div></details></div>
+</div>
+<!-- comandos uteis apos 03 -->
+<div class="station optional-group">
+<p class="group-label">Comandos úteis · não obrigatórios</p>
+<div class="command-card"><details class="station-toggle"><summary class="station-summary"><div class="station-head"><div class="station-eyebrow-row">
+<h3><code>/context</code></h3>
+<span class="session-tag session-same">Mesmo chat</span>
+</div></div></summary><div class="station-body"><p>Mostra um detalhamento numérico de quantos tokens já foram usados na conversa atual, sem sair dela.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Vale rodar principalmente perto do fim de uma entrevista longa, antes de gerar spec e tickets. Existe um limite prático chamado zona inteligente, a faixa de tokens dentro da qual o modelo ainda raciocina com nitidez, perto de 120 mil tokens nos modelos atuais.</p>
+<p>No plugin do VS Code existe uma barra fina no topo do painel, mas ela só aparece depois de uns 50% de uso, então não confie nela do início, prefira sempre o <code>/context</code>.</p>
+<p>Se a sessão estiver perto do limite antes de terminar <code>/to-tickets</code>, use <code>/handoff</code> para uma thread nova.</p>
+</div>
+</details></div></details></div>
+<div class="command-card"><details class="station-toggle"><summary class="station-summary"><div class="station-head"><div class="station-eyebrow-row">
+<h3>Limpar contexto entre tickets</h3>
+<span class="session-tag session-new">Chat novo</span>
+</div></div></summary><div class="station-body"><p>Não é bem um comando, é uma prática: porque os tickets são independentes, cada <code>/implement</code> começa numa sessão fresca, não acumulada com a entrevista inteira.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>No plugin do VS Code, evite confiar no <code>/clear</code> para isso, há relatos de que ele limpa a tela mas o modelo continua lembrando do que veio antes, ou que ele acaba abrindo uma aba nova em vez de limpar a atual. O caminho confiável é abrir uma aba de conversa nova de verdade, pela paleta de comandos, <code>Claude Code: Open in New Tab</code>, ou pelo atalho Ctrl+N se estiver habilitado.</p>
+</div>
+</details></div></details></div>
+</div>
+<!-- 04 -->
+<div class="station" data-n="04" id="st-04">
+<div class="station-card"><details class="station-toggle"><summary class="station-summary"><span class="station-num">04</span><div class="station-head"><div class="station-eyebrow-row">
+<p class="station-eyebrow">Estação 2 de 4</p>
+<span class="session-tag session-cond">Depende</span>
+</div><p class="cond-note"><strong>Condição:</strong> mesmo chat se o trabalho coube numa sessão só, na estação 03. Chat novo, um por ticket, se veio da rota de build grande.</p><h2><code>/implement</code></h2></div></summary><div class="station-body"><p>É aqui que o código de fato é escrito. Você aponta a spec ou o ticket, e o agente constrói o que foi combinado, escrevendo o código de verdade.</p><p>Enquanto implementa, ele não escreve tudo de uma vez e espera dar certo. Ele segue um passo a passo chamado <code>/tdd</code> (<button class="acr" data-target="sig-04" type="button">TDD</button>, Test-Driven Development): primeiro escreve um teste que descreve o comportamento esperado e que ainda falha, porque o código não existe. Depois escreve o código mínimo para esse teste passar. Só então melhora e organiza esse código, rodando o teste de novo a cada mudança para garantir que continua passando. Esse ciclo se repete pedaço por pedaço, até o trabalho estar pronto.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>A vantagem prática desse passo a passo é que o agente nunca fica "no escuro" sobre se o que ele escreveu funciona. Cada pedaço de código tem um teste que prova, na hora, se ele está certo ou errado, em vez de você só descobrir problemas depois, olhando o resultado final pronto.</p>
+</div>
+</details><details class="sig" id="sig-04">
+<summary>Significados</summary>
+<div class="sig-body">
+<div><strong>TDD</strong>Test-Driven Development. Desenvolver escrevendo primeiro um teste que falha, depois o código mínimo para ele passar, e só então melhorando esse código.</div>
+</div>
+</details></div></details></div>
+</div>
+<!-- comandos uteis apos 04 -->
+<div class="station optional-group">
+<p class="group-label">Comandos úteis · não obrigatórios</p>
+<div class="command-card"><details class="station-toggle"><summary class="station-summary"><div class="station-head"><div class="station-eyebrow-row">
+<h3><code>/diagnosing-bugs</code></h3>
+<span class="session-tag session-cond">Depende</span>
+</div><p class="cond-note"><strong>Condição:</strong> mesmo chat se o bug aparecer durante o <code>/implement</code> atual. Chat novo só se for um bug antigo que você está retomando depois, fora de uma implementação em andamento.</p></div></summary><div class="station-body"><p>Disciplina de investigação para quando algo já quebrou e o motivo não é óbvio. Não é preventiva, só entra em ação depois que o erro apareceu.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Você aciona dizendo algo como "diagnostica isso" ou "debuga isso", relatando um bug, dizendo que algo está quebrado, lançando erro, ou falhando. Para um erro simples e óbvio, o agente corrige direto, sem precisar dessa disciplina inteira.</p>
+<p>O processo é investigativo: reproduzir o problema, isolar a menor parte do código que causa ele, levantar uma hipótese do porquê, adicionar instrumentação para confirmar essa hipótese, corrigir, e por fim testar que o problema não volta a acontecer.</p>
+</div>
+</details></div></details></div>
+<div class="command-card"><details class="station-toggle"><summary class="station-summary"><div class="station-head"><div class="station-eyebrow-row">
+<h3><code>/tdd</code></h3>
+<span class="session-tag session-same">Mesmo chat</span>
+</div></div></summary><div class="station-body"><p>O motor de <button type="button" class="acr" data-target="sig-tddcmd">TDD</button> que o <code>/implement</code> já aciona sozinho nos pontos combinados, mas também pode ser chamado direto, fora de uma implementação inteira, para um pedaço isolado de código que você quer nascer já testado.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>O ciclo é sempre o mesmo: escrever um teste que descreve o comportamento esperado e que ainda falha, escrever o código mínimo para ele passar, e só então melhorar e organizar esse código, rodando o teste de novo a cada mudança.</p>
+<p>Vale chamar sozinho quando você já está no meio de uma sessão de código e quer aplicar essa disciplina a uma função ou módulo específico, sem precisar que isso venha de um ticket inteiro passando pelo <code>/implement</code>.</p>
+</div>
+</details><details class="sig" id="sig-tddcmd">
+<summary>Significados</summary>
+<div class="sig-body">
+<div><strong>TDD</strong>Test-Driven Development. Desenvolver escrevendo primeiro um teste que falha, depois o código mínimo para ele passar, e só então melhorando esse código.</div>
+</div>
+</details></div></details></div>
+</div>
+<!-- 05 -->
+<div class="station" data-n="05" id="st-05">
+<div class="station-card"><details class="station-toggle"><summary class="station-summary"><span class="station-num">05</span><div class="station-head"><div class="station-eyebrow-row">
+<p class="station-eyebrow">Estação 3 de 4</p>
+<span class="session-tag session-same">Mesmo chat</span>
+</div><h2><code>/code-review</code></h2></div></summary><div class="station-body"><p>É uma revisão do código antes dele ser commitado, parecida com o que um colega faria ao revisar seu pull request. Você não precisa chamar isso manualmente a cada ticket, o <code>/implement</code> já roda essa revisão sozinho, ao final de cada um, dentro da mesma sessão.</p><p>A revisão olha para duas perguntas diferentes, cada uma respondida por um agente separado, para uma resposta não influenciar a outra:</p><div class="options">
+<div class="option">
+<p class="opt-label">Pergunta 1 · qualidade</p>
+<p>O código escrito segue o estilo e as convenções já usadas no resto do repositório, e não tem problemas comuns de código malfeito, como duplicação ou funções fazendo coisa demais.</p>
+</div>
+<div class="option">
+<p class="opt-label">Pergunta 2 · fidelidade</p>
+<p>O que foi construído realmente entrega o que a spec ou o ticket pediam, sem ter deixado nada de fora nem ter feito algo diferente do combinado.</p>
+</div>
+</div><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Separar essas duas perguntas em agentes diferentes evita um problema comum: um revisor que está checando se o código está bonito acaba, sem perceber, relevando um pedaço que não faz o que deveria, porque a atenção estava no estilo, não no requisito.</p>
+<p><strong>O <code>/code-review</code> não faz push nem abre pull request, ele só revisa antes do commit.</strong> Depois que o commit acontece, dar push da branch e abrir o PR é Git comum, fora do pacote de skills, seja pela CLI do GitHub, seja pedindo direto ao agente como uma instrução de Git normal.</p>
+<p>Vale incluir algo como <code>Closes #14</code> na mensagem do commit ou no corpo do PR, apontando para o número daquele ticket. Isso fecha a sub-issue automaticamente quando o PR for mergeado, e libera qualquer outro ticket que estava esperando aquele terminar.</p>
+<p>Mesmo com a chamada automática por ticket, vale rodar <code>/code-review</code> manualmente de novo ao final de um lote maior de tickets, numa sessão nova, como uma checagem final antes de considerar aquele pedaço do trabalho pronto, já que uma sessão fresca tende a julgar com menos viés do que a mesma sessão que acabou de escrever o código. O cuidado aqui é apontar explicitamente o que revisar, como o intervalo de commits ou os números das issues, já que a sessão nova não tem essa memória sozinha. Segurar o push de vários tickets só para essa revisão em lote vai um pouco contra a filosofia de incrementos pequenos do pacote, então um meio-termo razoável é continuar dando push ticket por ticket e usar essa revisão em lote como uma checagem extra periódica, não como a única.</p>
+</div>
+</details></div></details></div>
+</div>
+<!-- maint -->
+<div class="station maint" data-n="~" id="st-improve">
+<div class="station-card"><details class="station-toggle"><summary class="station-summary"><span class="station-num">~</span><div class="station-head"><div class="station-eyebrow-row">
+<p class="station-eyebrow">Fora da rota · manutenção</p>
+<span class="session-tag session-new">Chat novo (recomendado)</span>
+</div><h2><code>/improve-codebase-architecture</code></h2></div></summary><div class="station-body"><p>Não é trabalho de funcionalidade, é manutenção. Rode sempre que tiver um tempo livre, em uma sessão separada da que você acabou de usar para implementar. Ela aponta oportunidades de simplificação no código.</p><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p><strong>Nem tudo aqui é automático.</strong> O escaneamento do código e a geração do relatório visual são automáticos, você só roda o comando e ele varre o projeto sozinho. Escolher qual candidato seguir é decisão sua, o relatório mostra várias oportunidades ao mesmo tempo, com uma força de recomendação cada, forte, vale explorar, ou especulativo. A partir da escolha, a entrada na entrevista volta a ser automática, a skill já cai sozinha numa sessão de <code>/grilling</code>, o mesmo motor por baixo do <code>/grill-with-docs</code>, sem você precisar digitar esse comando à parte.</p>
+<p>Ao escolher uma das oportunidades apontadas, isso vira uma ideia nova, que reentra na rota principal pela estação 01, o <code>/grill-with-docs</code>.</p>
+<p>Rodar numa sessão nova evita que o julgamento sobre o código carregue o viés das decisões que você acabou de negociar durante a entrevista. É a mesma lógica por trás dos subagentes paralelos do <code>/code-review</code>.</p>
+<p><strong>Pode ser um chat totalmente novo, sem precisar procurar a conversa original.</strong> O <code>/grill-with-docs</code> não depende do histórico daquela conversa específica para funcionar, ele lê o <code>CONTEXT.md</code> e os <button class="acr" data-target="sig-maint" type="button">ADR</button>s direto do repositório, que já têm tudo que foi decidido antes gravado em arquivo. É justamente essa a vantagem de guardar o estado em disco em vez de só na memória da conversa.</p>
+</div>
+</details><details class="sig" id="sig-maint">
+<summary>Significados</summary>
+<div class="sig-body">
+<div><strong>ADR</strong>Architecture Decision Record. Um registro curto de uma decisão de arquitetura difícil de reverter, o porquê dela, e o que foi descartado no caminho.</div>
+</div>
+</details></div></details></div>
+</div>
+<!-- triage -->
+<div class="station maint" data-n="!" id="st-triage">
+<div class="station-card highlight-orange"><details class="station-toggle"><summary class="station-summary"><span class="station-num">!</span><div class="station-head"><span class="highlight-tag">Muito útil no dia a dia</span><div class="station-eyebrow-row">
+<p class="station-eyebrow">Fora da rota · entrada externa</p>
+<span class="session-tag session-same">Mesmo chat</span>
+</div><h2><code>/triage</code></h2></div></summary><div class="station-body"><p>Não faz parte da rota principal, é a porta de entrada para bugs e pedidos que chegam de fora do seu planejamento, um usuário reportando algo, uma ideia solta que você mesmo anotou. Ela move cada item por uma pequena máquina de estados até virar algo pronto para o <code>/implement</code> pegar, ou até ser descartado de forma registrada.</p><div class="options">
+<div class="option">
+<p class="opt-label">needs-triage → needs-info</p>
+<p>Ponto de entrada de tudo que ainda não foi analisado. Se faltar detalhe, vai para needs-info e espera resposta de quem reportou.</p>
+</div>
+<div class="option">
+<p class="opt-label">ready-for-agent</p>
+<p>Já existe um resumo claro o bastante para um agente implementar sozinho, sem precisar de você no meio.</p>
+</div>
+<div class="option">
+<p class="opt-label">ready-for-human</p>
+<p>Exige julgamento, acesso externo ou teste manual. Não pode ser delegada a um agente.</p>
+</div>
+<div class="option">
+<p class="opt-label">wontfix</p>
+<p>Rejeitada, e fica registrada para não ser discutida de novo no futuro.</p>
+</div>
+</div><details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Ao analisar um item, o agente lê o relato inteiro, procura no código se aquilo já existe implementado, checa se algo parecido já foi rejeitado antes, e, se for um bug, tenta reproduzir antes de qualquer outra coisa. Se o item estiver incompleto mas valer a pena, ele pode rodar um <code>/grill-with-docs</code> embutido para lapidar antes de marcar como pronto.</p>
+<p>Vale até em projeto solo. Qualquer ideia ou bug que você mesmo for anotando ao longo do tempo também pode passar por aqui antes de virar trabalho de verdade, em vez de ficar bagunçado numa lista solta.</p>
+<p><strong>A diferença real para ir direto ao grill é essa validação prévia.</strong> O grill assume que a decisão de construir já foi tomada, só falta decidir como. O <code>/triage</code> ainda não sabe se aquilo é real, se já existe, ou se já foi descartado, e boa parte das vezes nem chega a grillar, terminando em <code>wontfix</code>, <code>needs-info</code>, ou <code>ready-for-human</code> antes disso.</p>
+<p><strong>Você não precisa registrar a issue antes de rodar o comando.</strong> Pode contar a ideia direto em linguagem natural para o <code>/triage</code>, e ele mesmo cria a issue se ela não existir, além de já processar o estado dela. Também pode simplesmente abrir a issue direto no GitHub, sem label nenhuma, sem envolver o agente, ela fica como "Unlabeled" esperando, e na próxima vez que você rodar <code>/triage</code>, ele descobre sozinho e processa a partir dali.</p>
+<p><strong>Itens marcados <code>wontfix</code></strong> não só fecham, também ficam resumidos numa pasta <code>.out-of-scope/</code> no repositório. Da próxima vez que uma ideia parecida aparecer, o próprio <code>/triage</code> confere ali antes de tratar como algo novo, evitando reabrir uma discussão já encerrada.</p>
+<p><strong>Onde fica a lista</strong> depende do rastreador escolhido no <code>/setup-matt-pocock-skills</code>. No GitHub, é a própria aba de Issues, filtrada pelas labels de estado, <code>needs-triage</code>, <code>needs-info</code>, <code>ready-for-agent</code>, <code>ready-for-human</code>, <code>wontfix</code>. Em arquivos locais, cada item vira um arquivo dentro de <code>.scratch/</code>, com uma linha <code>Status:</code> no topo indicando o estado.</p>
+<p><strong>O estado que a gente cobriu é só uma das duas dimensões.</strong> Todo item triado carrega também um papel de categoria, junto com o de estado, algo como bug, melhoria, ou pergunta. Os dois rótulos vivem lado a lado na mesma issue, não um no lugar do outro.</p>
+<p><strong>Pull requests também podem entrar no triage.</strong> Existe uma opção no <code>/setup-matt-pocock-skills</code>, desligada por padrão, que faz o <code>/triage</code> tratar PRs externos como se fossem issues, mesmos estados, mesma máquina, só com pequenos ajustes, por exemplo <code>ready-for-agent</code> numa PR significa que já existe um resumo anexado e um agente deve seguir naquele diff, em vez de implementar algo do zero.</p>
+</div>
+</details></div></details></div>
+</div>
+
+<!-- wayfinder -->
+<div class="station maint" data-n="∞" id="st-wayfinder">
+<div class="station-card"><details class="station-toggle"><summary class="station-summary"><span class="station-num">∞</span><div class="station-head"><div class="station-eyebrow-row">
+<p class="station-eyebrow">Fora da rota · trabalho gigante</p>
+<span class="session-tag session-cond">Depende</span>
+</div>
+<p class="cond-note"><strong>Condição:</strong> só entra quando o trabalho é grande demais até para uma entrevista de <code>/grill-with-docs</code> só resolver numa sessão.</p>
+<h2><code>/wayfinder</code></h2></div></summary><div class="station-body"><p>Para quando o trabalho é grande demais para uma sessão de entrevista só resolver, ele não passa pela estação 01. Em vez disso, mapeia o esforço como uma série de tickets de decisão no próprio rastreador de issues, cada um guardando uma pergunta cuja resposta é uma decisão a tomar, não um pedaço de código para escrever.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Você resolve esses tickets de decisão um de cada vez, até o caminho até o destino final ficar claro. É a mesma ideia de resolver a incerteza aos poucos que o <code>/grill-with-docs</code> resolve numa conversa só, só que espalhada por várias sessões, porque o escopo é grande demais para uma só.</p>
+<p>Quando termina, o resultado cai direto no <code>/to-spec</code>, ou até direto no <code>/implement</code> se o esforço acabar sendo pequeno depois de todas as decisões resolvidas. É uma das poucas exceções que não reentra pela estação 01.</p>
+</div>
+</details>
+</div>
+</details></div>
+</div>
+</div>
+
+<section class="post-route">
+<p class="plan-tag" style="margin-bottom: 0.5rem;">Fora da trilha</p>
+<h2 class="post-route-title">Comandos úteis, sem estação fixa</h2>
+<p class="plan-sub" style="font-size: 0.92rem; margin-bottom: 1.8rem;">Skills reaproveitáveis, não amarradas a nenhum passo específico da rota. Separadas por para que servem, não precisam ser chamadas em ordem nem em algum ponto obrigatório.</p>
+
+<div class="cmd-group" id="grp-aprender">
+<h3 class="cmd-group-title">Para aprender a fundo, fora do projeto</h3>
+<p class="cmd-group-desc">Diferente de tudo mais nessa página, isso não roda na sessão nem na pasta do seu projeto. É dono da própria pasta, uma por tópico que você quer aprofundar, sem relação nenhuma com o repositório que você está construindo.</p>
+
+<div class="command-card">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<span class="highlight-tag" style="color: var(--accent); border-color: var(--accent);">Vale muito para o seu objetivo de aprender fazendo</span>
+<div class="station-eyebrow-row">
+<h3><code>/teach</code></h3>
+<span class="session-tag session-new">Chat novo</span>
+</div>
+<p class="cond-note"><strong>Condição:</strong> sempre numa pasta própria, separada da pasta do projeto, uma pasta por tópico. Tecnicamente roda na mesma sessão de outra coisa, mas não faz sentido misturar, veja o porquê nos tópicos abaixo.</p>
+</div>
+</summary>
+<div class="station-body">
+<p>Transforma o diretório onde você roda o comando num espaço de ensino permanente, focado num único tópico, ensinado ao longo de várias sessões através de lições curtas em HTML, cada uma autocontida. Não compartilha workflow com nenhuma outra skill do pacote, é dono da própria pasta e vive só ali.</p>
+<p><strong>Uma pasta cobre um tópico só, não o projeto inteiro.</strong> Dentro desse tópico único existem várias lições numeradas, e é entre elas que você avança quando roda o comando de novo. Um assunto diferente, mesmo dentro do mesmo projeto, é sempre uma pasta nova, com sua própria entrevista de missão do zero.</p>
+<p><strong>Como usar na prática:</strong> na primeira vez, se o arquivo <code>MISSION.md</code> daquela pasta ainda estiver vazio, o próprio <code>/teach</code> para tudo e pergunta por que você quer aprender aquilo, antes de ensinar qualquer coisa. Esse motivo fica gravado e guia todas as lições seguintes. Diferente de uma explicação normal, ele não ensina a partir do que o modelo já sabe de cabeça, esse conhecimento é tratado como não confiável, ele primeiro busca fontes externas de confiança, registra em <code>RESOURCES.md</code>, e cita essas fontes dentro de cada lição.</p>
+<p>As lições em si, numeradas e completas, ficam em <code>./lessons/</code>. O <code>./reference/</code> guarda só um resumo comprimido de cada uma, tipo um cheat sheet para consulta rápida depois, não a lição inteira. Existe ainda um <code>./learning-records/</code>, no estilo <button type="button" class="acr" data-target="sig-teach">ADR</button>, guardando o que você já aprendeu, usado para calcular o que ensinar a seguir sem repetir nem pular etapas. Um estilo visual compartilhado nasce logo cedo para as lições parecerem parte de um curso só, não páginas soltas.</p>
+
+<details class="more">
+<summary>Quando rodar de novo, e como revisitar</summary>
+<div class="more-body">
+<p>Não existe gatilho automático nem prazo, você roda de novo simplesmente quando quiser continuar aprendendo aquele tópico, sem esperar nada terminar antes, pode ser no dia seguinte, uma semana depois, ou duas vezes no mesmo dia. O comando sozinho olha o <code>MISSION.md</code> e o <code>./learning-records/</code> para calcular a próxima lição no nível certo, você não precisa referenciar número de lição nem recontar o que já viu.</p>
+<p>Para revisitar algo específico, o caminho garantido é reabrir o arquivo daquela lição direto em <code>./lessons/</code>, é um HTML salvo de verdade, sem precisar do comando. Pedir para o próprio <code>/teach</code> revisitar também deve funcionar, já que o desenho dele usa prática de recuperação e repetição espaçada como método, trazendo conceitos antigos de volta entrelaçados nas lições novas, mas isso não está documentado com uma resposta garantida de como ele reage a esse pedido específico.</p>
+</div>
+</details>
+
+<details class="more">
+<summary>Mesma sessão ou sessão separada?</summary>
+<div class="more-body">
+<p>A continuidade mora na pasta, não na conversa, então tecnicamente as três formas funcionam, o próprio autor confirmou isso quando perguntado: ficar na mesma sessão que já está rodando outros comandos, chamar <code>/teach</code> de novo numa sessão nova, ou abrir uma sessão nova na mesma pasta e pedir a próxima lição. Na prática, ele mesmo diz que cada lição costuma ser uma chamada separada, não várias de uma vez seguidas logo no início, e o hábito mais comum é abrir uma sessão nova dentro daquela pasta e escrever algo como <code>/teach próxima lição sobre &lt;tópico&gt;</code>.</p>
+<p>Mesmo sendo tecnicamente possível rodar na mesma sessão do seu projeto, misturar as duas coisas tende a confundir mais do que ajudar. Não é para uma explicação pontual, se você só precisa esclarecer algo na hora, pergunte direto na conversa que já está aberta. Reserve o <code>/teach</code> para quando o aprendizado em si for o projeto, não um efeito colateral de estar codando.</p>
+</div>
+</details>
+
+<details class="more">
+<summary>Por que não usar /handoff para chegar aqui</summary>
+<div class="more-body">
+<p>Não faz sentido, e vale ser direto sobre isso. O <code>/handoff</code> e o <code>/teach</code> não compartilham formato de estado nenhum. O <code>/handoff</code> gera um resumo pensado para outra sessão de planejamento ou implementação continuar um trabalho em andamento, o <code>/teach</code> lê os próprios arquivos da pasta dele, <code>MISSION.md</code>, <code>RESOURCES.md</code>, <code>lessons/</code>, sem saber interpretar um arquivo de handoff.</p>
+<p>Se surgir uma dúvida de aprendizado no meio de uma implementação, o caminho mais direto é simplesmente abrir, ou voltar, na sua pasta de <code>/teach</code> e contar em linguagem natural o que você acabou de esbarrar, em vez de tentar formalizar isso com um handoff.</p>
+</div>
+</details>
+
+<details class="more">
+<summary>Como escolher um tópico a partir do seu projeto</summary>
+<div class="more-body">
+<p>Já que "o meu projeto" não é um tópico válido para o <code>/teach</code>, o caminho é extrair os conceitos de dentro dele primeiro. Peça, numa conversa normal ali no repositório, ou com o <code>/domain-modeling</code>, uma lista do que está sendo usado, os padrões, as bibliotecas, as escolhas de arquitetura. Essa lista vira um menu, e cada item dela, isoladamente, já é um tópico válido, Clean Architecture, Kotlin Coroutines, CQRS, o que for.</p>
+<p><strong>Por tópico, não tudo de uma vez.</strong> Não vale a pena despejar a lista inteira numa pasta só esperando que o <code>/teach</code> organize sozinho, ele ensina um tópico de cada vez, e o <code>MISSION.md</code> existe para segurar um motivo coerente para aprender aquilo especificamente, algo que se dilui se forem dez assuntos misturados na mesma pasta. O jeito mais seguro é escolher um item da lista por vez e abrir uma pasta própria só para ele, uma para Clean Architecture, outra separada se um dia quiser Coroutines, por exemplo.</p>
+</div>
+</details>
+
+<details class="more">
+<summary>Cuidados práticos</summary>
+<div class="more-body">
+<p>Confira onde a primeira lição realmente foi salva antes de construir em cima dela, e nomeie a pasta explicitamente ao começar uma sessão nova, em vez de confiar que "o diretório atual" vai ser óbvio sozinho.</p>
+<p>Vale lembrar, mesmo citando fontes, você não tem garantia absoluta de que nada ali foi inventado, só a palavra da própria skill.</p>
+</div>
+</details>
+
+<details class="sig" id="sig-teach">
+<summary>Significados</summary>
+<div class="sig-body">
+<div><strong>ADR</strong>Architecture Decision Record. Um registro curto de uma decisão de arquitetura difícil de reverter, o porquê dela, e o que foi descartado no caminho.</div>
+</div>
+</details>
+</div>
+</details>
+</div>
+</div>
+
+<div class="cmd-group" id="grp-comunicar">
+<h3 class="cmd-group-title">Para se comunicar melhor no dia a dia</h3>
+<p class="cmd-group-desc">Ao contrário do <code>/teach</code>, essas rodam dentro da própria sessão de trabalho, para resolver um travamento pontual, uma decisão que não é sua, uma explicação que não aterrissou, ou documentação pensada para outro agente ler depois.</p>
+
+<div class="command-card">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<div class="station-eyebrow-row">
+<h3><code>/to-questionnaire</code></h3>
+<span class="session-tag session-same">Mesmo chat</span>
+</div>
+</div>
+</summary>
+<div class="station-body">
+<p>Para quando uma decisão trava porque só uma outra pessoa consegue responder, não você. Em vez de te grillar sobre o assunto, ele te grilla sobre o envio, quem é essa pessoa, o que exatamente você precisa que ela responda, e gera um questionário em Markdown para entregar a ela, preenchido de forma assíncrona ou junto numa reunião.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>A diferença chave é essa inversão do que está sendo grillado. Um <code>/grill-with-docs</code> normal te pergunta sobre o assunto em si, porque assume que você tem a resposta. O <code>/to-questionnaire</code> assume o oposto, que você não tem, então as perguntas dele são sobre como formular o pedido, para quem mandar, e que formato de resposta você precisa de volta, não sobre o conteúdo da decisão.</p>
+<p>Útil quando um grill trava numa pergunta que depende de alguém de fora, seu orientador, um cliente, alguém do time que sabe de uma regra de negócio que você não sabe. Em vez de travar o planejamento esperando essa resposta em algum lugar solto, você gera algo formal para levar até essa pessoa.</p>
+</div>
+</details>
+</div>
+</details>
+</div>
+
+<div class="command-card">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<div class="station-eyebrow-row">
+<h3><code>/wait-what</code></h3>
+<span class="session-tag session-same">Mesmo chat</span>
+</div>
+</div>
+</summary>
+<div class="station-body">
+<p>Dispare no exato momento em que uma resposta do agente não fizer sentido para você. Ele reformula a explicação em português claro, usando o vocabulário já registrado no seu <code>CONTEXT.md</code>, em vez de repetir a mesma explicação com as mesmas palavras.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>A diferença de só perguntar "não entendi, explica de novo" é que o <code>/wait-what</code> tenta identificar qual pedaço específico da explicação anterior não aterrissou, e reconstrói a partir dali, ancorado nos termos que o seu próprio projeto já usa, em vez de trazer um vocabulário genérico novo que também pode não fazer sentido.</p>
+<p>Vale disparar na hora, ainda na mesma conversa onde a confusão aconteceu, porque ele depende do que acabou de ser dito para saber o que reformular.</p>
+</div>
+</details>
+</div>
+</details>
+</div>
+
+<div class="command-card">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<div class="station-eyebrow-row">
+<h3><code>/writing-for-agents</code></h3>
+<span class="session-tag session-any">Qualquer sessão</span>
+</div>
+</div>
+</summary>
+<div class="station-body">
+<p>Disciplina para escrever documentos pensados para serem lidos por agentes, não por pessoas, skills, arquivos <code>AGENTS.md</code> ou <code>CLAUDE.md</code>, e qualquer documento que um agente alcança seguindo um link ou caminho, em vez de ler direto na conversa.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Escrever para um agente pede um estilo diferente de escrever para uma pessoa, mais explícito, menos ambíguo, com a informação mais importante logo no início, porque um agente não tem o mesmo faro que uma pessoa para inferir o que ficou implícito.</p>
+<p>Vale a pena se você chegar a escrever uma skill sua com o <code>/writing-great-skills</code>, ou quiser deixar o <code>CONTEXT.md</code> e o <code>AGENTS.md</code> do seu projeto mais claros para as outras skills lerem, já que todas elas dependem desses arquivos para funcionar direito.</p>
+</div>
+</details>
+</div>
+</details>
+</div>
+</div>
+
+<div class="cmd-group" id="grp-orientar">
+<h3 class="cmd-group-title">Para se orientar entre os comandos</h3>
+<p class="cmd-group-desc">Quando bater a dúvida de qual comando usar, esse é o próprio jeito do pacote responder isso, sem precisar abrir esse guia.</p>
+
+<div class="command-card">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<div class="station-eyebrow-row">
+<h3><code>/ask-matt</code></h3>
+<span class="session-tag session-any">Qualquer sessão</span>
+</div>
+</div>
+</summary>
+<div class="station-body">
+<p>Um roteador. Pergunte a ele qual skill ou fluxo se encaixa na sua situação, em vez de tentar lembrar sozinho qual comando usar.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Útil justamente para o tipo de dúvida que a gente resolveu aqui nessa conversa inteira, "devo ir pelo triage ou pelo grill", "isso é grande o bastante para tickets". Ele só orienta sobre qual dos comandos user-invoked usar, não substitui esse guia nem executa nada sozinho.</p>
+</div>
+</details>
+</div>
+</details>
+</div>
+</div>
+
+<div class="cmd-group" id="grp-caminho">
+<h3 class="cmd-group-title">Front-end ou back-end: o que muda na prática</h3>
+<p class="cmd-group-desc">Nenhuma skill do pacote é exclusiva de front ou de back, todas trabalham em cima do que a entrevista já levantou. O que muda é qual comando vale puxar com mais força para cada lado — não é uma parada obrigatória da rota, é uma referência de ênfase.</p>
+
+<div class="options">
+<div class="option">
+<p class="opt-label">Trabalho de tela</p>
+<p>A dúvida costuma ser visual, então <span class="cmd">/prototype</span> entra fácil depois do grill: ele já aciona sozinho a skill de frontend design do Claude Code, gerando variações comparáveis lado a lado antes de decidir. Vale testar de verdade no navegador antes de considerar pronto, não só ler o código gerado.</p>
+</div>
+<div class="option">
+<p class="opt-label">Trabalho de servidor, dado ou regra de negócio</p>
+<p>Raramente passa por <span class="cmd">/prototype</span>, a dúvida normalmente não é visual. Vale mais peso em <span class="cmd">/domain-modeling</span> para desafiar os limites entre módulos, e em <span class="cmd">/codebase-design</span> para desenhar a fronteira entre camadas antes do <span class="cmd">/implement</span>.</p>
+</div>
+</div>
+
+<div class="command-card" style="margin-top: 0.9rem;">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<div class="station-eyebrow-row">
+<h3>E quando é dos dois lados ao mesmo tempo?</h3>
+<span class="session-tag session-any">Qualquer sessão</span>
+</div>
+</div>
+</summary>
+<div class="station-body">
+<p>Não existe um "modo full-stack" separado para ligar. O <code>/to-tickets</code> já corta cada ticket ponta a ponta por padrão, banco, API, tela, teste juntos na mesma fatia, em vez de separar um ticket de front do de back.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Front e back só viram uma escolha consciente de verdade quando o trabalho é pequeno o bastante para nem passar por <code>/to-tickets</code>, indo direto de <code>/grill-with-docs</code> para <code>/implement</code>. Aí sim vale decidir, na hora, qual das duas ênfases da tabela acima usar dentro dessa sessão.</p>
+</div>
+</details>
+</div>
+</details>
+</div>
+</div>
+
+<div class="cmd-group" id="grp-desafiar">
+<h3 class="cmd-group-title">Para desafiar decisões e desenhar código</h3>
+<p class="cmd-group-desc">Nenhum dos dois decide o que construir, isso é papel do grill. Os dois entram depois, para questionar o que já foi decidido ou para pensar em como desenhar a fronteira entre partes do código.</p>
+
+<div class="command-card">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<div class="station-eyebrow-row">
+<h3><code>/domain-modeling</code></h3>
+<span class="session-tag session-any">Qualquer sessão</span>
+</div>
+</div>
+</summary>
+<div class="station-body">
+<p>É a disciplina que já roda por baixo do <code>/grill-with-docs</code>, mas também pode ser chamada sozinha, direto, sem abrir uma entrevista de feature nova. Serve para desafiar um termo ou uma decisão que já existe, comparando contra o <code>CONTEXT.md</code> e os <button type="button" class="acr" data-target="sig-domainmodeling">ADR</button>s atuais do repositório.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>É a ferramenta certa para quando você quer questionar uma decisão por ter esquecido algo ou por dúvida, principalmente depois que ela já virou um ADR fechado. Em vez de editar o ADR antigo por cima, o formato correto é marcar o antigo como superado e escrever um novo, registrando o motivo da mudança, o campo de status de um ADR existe justamente para isso.</p>
+<p>Como ele lê o <code>CONTEXT.md</code> e os ADRs direto do repositório, funciona em qualquer sessão, sem depender do histórico da conversa onde a decisão original foi tomada.</p>
+<p>Ele também serve como um jeito indireto de gerar sugestão de melhoria para a ideia em si, já que estressar contra cenários expõe lacunas e casos de borda esquecidos. Se algo daí parecer interessante, é só levar como ponto de partida para uma sessão de <code>/grill-with-docs</code>.</p>
+</div>
+</details>
+<details class="sig" id="sig-domainmodeling">
+<summary>Significados</summary>
+<div class="sig-body">
+<div><strong>ADR</strong>Architecture Decision Record. Um registro curto de uma decisão de arquitetura difícil de reverter, o porquê dela, e o que foi descartado no caminho.</div>
+</div>
+</details>
+</div>
+</details>
+</div>
+
+<div class="command-card">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<div class="station-eyebrow-row">
+<h3><code>/codebase-design</code></h3>
+<span class="session-tag session-any">Qualquer sessão</span>
+</div>
+</div>
+</summary>
+<div class="station-body">
+<p>Disciplina e vocabulário compartilhado para desenhar módulos profundos, interfaces pequenas, costuras limpas entre partes do sistema, testáveis pela própria interface.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Entra em jogo quando a dúvida não é sobre o que construir, isso já é papel do <code>/grill-with-docs</code>, mas sobre como desenhar a fronteira entre duas partes do código para que fiquem fáceis de testar e de trocar depois, sem espalhar detalhes de implementação para o resto do sistema.</p>
+</div>
+</details>
+</div>
+</details>
+</div>
+</div>
+
+<div class="cmd-group" id="grp-investigar">
+<h3 class="cmd-group-title">Para investigar e manter o repositório</h3>
+<p class="cmd-group-desc">Trabalho de apoio, que não decide nada sozinho, só junta informação ou resolve um imprevisto puramente técnico do Git.</p>
+
+<div class="command-card">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<div class="station-eyebrow-row">
+<h3><code>/research</code></h3>
+<span class="session-tag session-any">Qualquer sessão</span>
+</div>
+</div>
+</summary>
+<div class="station-body">
+<p>Investiga uma pergunta contra fontes primárias, não só a memória do agente, e grava o resultado como um arquivo markdown dentro do próprio repositório.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Útil antes de um <code>/grill-with-docs</code> quando a decisão depende de algo externo que ninguém no time sabe de cabeça, uma biblioteca nova, o comportamento real de uma API de terceiro. O resultado gravado em arquivo pode depois ser referenciado durante a entrevista, em vez de se perder numa conversa antiga.</p>
+</div>
+</details>
+</div>
+</details>
+</div>
+
+<div class="command-card">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<div class="station-eyebrow-row">
+<h3><code>/resolving-merge-conflicts</code></h3>
+<span class="session-tag session-any">Qualquer sessão</span>
+</div>
+</div>
+</summary>
+<div class="station-body">
+<p>Resolve conflitos de merge do Git pedaço por pedaço, hunk a hunk, sem abortar a operação no meio do caminho.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Não tem relação com a rota de planejamento até o código, é acionada no momento puramente prático de um merge ou rebase que deu conflito, independente de qual estação da rota você estava seguindo antes.</p>
+</div>
+</details>
+</div>
+</details>
+</div>
+</div>
+
+<div class="cmd-group" id="grp-editar">
+<h3 class="cmd-group-title">Para quem quer editar as próprias skills</h3>
+<p class="cmd-group-desc">Meta, sobre as skills em si, não sobre o seu projeto. Vale a pena se um dia você quiser customizar ou criar uma skill sua.</p>
+
+<div class="command-card">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<div class="station-eyebrow-row">
+<h3><code>/writing-great-skills</code></h3>
+<span class="session-tag session-any">Qualquer sessão</span>
+</div>
+</div>
+</summary>
+<div class="station-body">
+<p>Referência sobre como escrever ou editar uma skill própria, com o vocabulário e os princípios que fazem uma skill se comportar de um jeito previsível.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Vale quando você quiser adaptar uma dessas skills às suas manias, ou criar uma sua do zero para um passo que falta na rota, como aquela lacuna de ideias de produto que a gente comentou não existir aqui.</p>
+</div>
+</details>
+</div>
+</details>
+</div>
+
+<div class="command-card">
+<details class="station-toggle">
+<summary class="station-summary">
+<div class="station-head">
+<div class="station-eyebrow-row">
+<h3><code>/grilling</code></h3>
+<span class="session-tag session-any">Qualquer sessão</span>
+</div>
+</div>
+</summary>
+<div class="station-body">
+<p>É o motor por trás do <code>/grill-me</code> e do <code>/grill-with-docs</code>, a entrevista relentless em si, sem a parte de gravar em <code>CONTEXT.md</code> e ADRs nem qualquer outro acréscimo.</p>
+<details class="more">
+<summary>Mais contexto</summary>
+<div class="more-body">
+<p>Raramente chamado direto por você. Está aqui mais para completar a lista de comandos do que como algo que muda seu dia a dia, já que <code>/grill-me</code> e <code>/grill-with-docs</code> cobrem os casos práticos de usar esse motor.</p>
+</div>
+</details>
+</div>
+</details>
+</div>
+</div>
+</section>
+
+<div class="footnote" style="margin-top: 1.2rem;">
+<strong>Conversar sobre o que foi feito e os próximos passos também não tem skill própria.</strong> É conversa comum, na mesma sessão do <code>/implement</code> se ainda estiver aberta, ou numa nova trazendo o <code>CONTEXT.md</code>, os ADRs e as issues fechadas como referência, para não depender da memória de uma conversa antiga. Se sair dali uma ideia de trabalho nova, ela reentra pela estação 01. Se for só um resumo, vale a nota abaixo.
+</div>
+<div class="footnote" style="margin-top: 1.2rem;">
+<strong>Documentos e apresentações não fazem parte dessa rota.</strong> As skills daqui são focadas em código. Para montar um relatório ou uma apresentação sobre o projeto, abra uma conversa comum com o Claude, fora do fluxo de agente, e traga o <code>CONTEXT.md</code>, os ADRs e a spec (PRD) como referência. A partir daí, peça um documento Word ou slides de apresentação com base no que está registrado nesses arquivos.
+  </div>
+</div>
+</div>
+<script>
+  document.querySelectorAll('button.acr').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      target.open = true;
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target.classList.remove('flash');
+      void target.offsetWidth;
+      target.classList.add('flash');
+      window.setTimeout(function () {
+        target.classList.remove('flash');
+      }, 1200);
+    });
+  });
+
+  document.querySelectorAll('a.toc-link').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      var targetId = link.getAttribute('href').slice(1);
+      var target = document.getElementById(targetId);
+      if (!target) return;
+      e.preventDefault();
+      var toggle = target.querySelector(':scope > .station-card > details.station-toggle');
+      if (toggle) toggle.open = true;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById('themeToggle');
+    var label = document.getElementById('themeToggleLabel');
+    btn.addEventListener('click', function () {
+      var isLight = root.getAttribute('data-theme') === 'light';
+      root.setAttribute('data-theme', isLight ? 'dark' : 'light');
+      label.textContent = isLight ? 'Tema escuro' : 'Tema claro';
+    });
+  })();
+
+  (function () {
+    var page = document.getElementById('page');
+    var sidebar = document.getElementById('sidebar');
+    var toggleBtn = document.getElementById('sidebarToggle');
+    var hoverZone = document.getElementById('sidebarHoverZone');
+    var peekTimer = null;
+
+    function setCollapsed(collapsed) {
+      page.classList.toggle('sidebar-collapsed', collapsed);
+      toggleBtn.setAttribute('aria-expanded', String(!collapsed));
+      try { localStorage.setItem('sidebarCollapsed', collapsed ? '1' : '0'); } catch (e) {}
+    }
+
+    var stored = null;
+    try { stored = localStorage.getItem('sidebarCollapsed'); } catch (e) {}
+    if (stored === '1') setCollapsed(true);
+
+    toggleBtn.addEventListener('click', function () {
+      sidebar.classList.remove('sidebar-peek');
+      setCollapsed(!page.classList.contains('sidebar-collapsed'));
+    });
+
+    function openPeek() {
+      if (!page.classList.contains('sidebar-collapsed')) return;
+      clearTimeout(peekTimer);
+      sidebar.classList.add('sidebar-peek');
+    }
+    function closePeekDelayed() {
+      clearTimeout(peekTimer);
+      peekTimer = setTimeout(function () {
+        sidebar.classList.remove('sidebar-peek');
+      }, 220);
+    }
+
+    hoverZone.addEventListener('mouseenter', openPeek);
+    hoverZone.addEventListener('mouseleave', closePeekDelayed);
+    sidebar.addEventListener('mouseenter', openPeek);
+    sidebar.addEventListener('mouseleave', closePeekDelayed);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && page.classList.contains('sidebar-collapsed')) {
+        sidebar.classList.remove('sidebar-peek');
+      }
+    });
+  })();
+
+  (function () {
+    if (!('IntersectionObserver' in window)) return;
+    var links = Array.prototype.slice.call(document.querySelectorAll('a.toc-link'));
+    var byId = {};
+    links.forEach(function (link) {
+      var id = link.getAttribute('href').slice(1);
+      if (document.getElementById(id)) byId[id] = link;
+    });
+    var ids = Object.keys(byId);
+    if (!ids.length) return;
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        links.forEach(function (l) { l.classList.remove('active'); });
+        byId[entry.target.id].classList.add('active');
+      });
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+    ids.forEach(function (id) { observer.observe(document.getElementById(id)); });
+  })();
+</script>
+</body>
+</html>
