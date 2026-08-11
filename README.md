@@ -4,18 +4,20 @@ Documentação de referência, estação por estação, do pacote de skills [mat
 
 Página única em HTML/CSS/JS, sem build, sem dependências além de fontes do Google Fonts. Abra o arquivo direto no navegador.
 
+**🔗 Acesse online:** https://luanrodrigues15.github.io/doc-mattpocock-skills/
+
 ## Como usar
 
-Baixe o repositório e abra `rota-principal-mattpocock-skills.html` em qualquer navegador — não precisa de servidor.
+Baixe o repositório e abra `index.html` em qualquer navegador — não precisa de servidor.
 
 ```bash
-git clone https://github.com/LuanRodrigues15/<nome-do-repo>.git
-cd <nome-do-repo>
-start rota-principal-mattpocock-skills.html   # Windows
-open rota-principal-mattpocock-skills.html    # macOS
+git clone https://github.com/LuanRodrigues15/doc-mattpocock-skills.git
+cd doc-mattpocock-skills
+start index.html   # Windows
+open index.html    # macOS
 ```
 
-Ou publique via **GitHub Pages** (Settings → Pages → branch `main`, pasta `/root`) para acessar por um link direto.
+Ou acesse diretamente pelo **GitHub Pages**: https://luanrodrigues15.github.io/doc-mattpocock-skills/
 
 ## O que tem na página
 
@@ -28,7 +30,7 @@ Ou publique via **GitHub Pages** (Settings → Pages → branch `main`, pasta `/
 
 ## Estrutura
 
-Tudo em um único arquivo (`rota-principal-mattpocock-skills.html`), propositalmente:
+Tudo em um único arquivo (`index.html`), propositalmente:
 
 - CSS num único bloco `<style>`, com variáveis de tema (`:root` / `[data-theme="light"]`).
 - Conteúdo estruturado como estações (`.station`) dentro de uma linha do tempo (`.route`), cada uma com um card colapsável (`<details>`).
