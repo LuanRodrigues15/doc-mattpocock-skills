@@ -19,6 +19,12 @@ open index.html    # macOS
 
 Ou acesse diretamente pelo **GitHub Pages**: https://luanrodrigues15.github.io/doc-mattpocock-skills/
 
+## Prints
+
+| Visão geral | Sidebar + estação 00 | Detalhe da estação 01 |
+|---|---|---|
+| ![Visão geral da página](assets/screenshots/overview.png) | ![Sidebar com navegação rápida e estação 00](assets/screenshots/sidebar-estacao-00.png) | ![Card expandido da estação 01, grill-with-docs](assets/screenshots/estacao-01-detalhe.png) |
+
 ## O que tem na página
 
 - **Rota principal**: as estações fixas (00 a 05), do setup ao code review, com bifurcações marcadas onde a decisão é sua.
